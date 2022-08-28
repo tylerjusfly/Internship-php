@@ -19,10 +19,24 @@
     //Get Raw Posted Data
     $data = json_decode(file_get_contents("php://input"));
 
-    $user->fullname = $data->fullname;
-    $user->gender = $data->gender;
-    $user->username = $data->username;
-    $user->password = $data->password;
+    if(
+        ctype_alpha($data->fullname) && ctype_alpha($data->gender) && ctype_alpha($data->username)
+        && isset($data->fullname) && isset($data->gender) && isset($data->username) && isset($data->password)
+    )
+    {
+        $user->fullname = $data->fullname;
+        $user->gender = $data->gender;
+        $user->username = $data->username;
+        //hashing userPassword
+        $hashedPass = password_hash($data->password, PASSWORD_DEFAULT);
+        $user->password = $hashedPass;
+
+    }
+    else{
+        echo json_encode("Input data not valid");
+    }
+
+    
 
     // Create the data
     if($user->signUp())
